@@ -3,35 +3,36 @@ use dbBANCO;
 
 create table tbcliente(
 Cpf bigint primary key,
-Nome varchar(50),
-Sexo char(1),
-Endereco varchar(50)
+Nome varchar(50) not null,
+Sexo char(1) not null,
+Endereco varchar(50) not null
 );
 
 create table tbtelefone_cliente(
-Telefone int
+Telefone int primary key 
 );
 
 -- adicioanndo a fk -- 
+alter table tbtelefone_cliente add Cpf bigint;
+alter table tbtelefone_cliente add constraint Cpf foreign key (Cpf) references tbcliente (Cpf);
+
 
 create table tbhistorico(
-DataIncio date
+DataIncio date,
+NumeroConta int,
+Cpf bigint,
+primary key (NumeroConta, Cpf),
+foreign key (Cpf) references tbcliente (Cpf),
+foreign key (NumeroConta) references tbconta (NumeroConta)
 );
 
-alter table tbhistorico modify DataInicio date not null;
-
-alter table tbhistorico add NumeroConta int;
-alter table tbhistorico add constraint NumeroConta foreign key (NumeroConta) references tbconta (NumeroConta);
-
-alter table tbhistorico add Cpf bigint;
-alter table tbhistorico add constraint Cpf foreign key (Cpf) references tbcliente (Cpf);
 
 describe tbhistorico;
 
 create table tbconta(
 NumeroConta int primary key,
-Saldo decimal(7,2) not null,
-TipoConta smallint not null
+Saldo decimal(7,2),
+TipoConta smallint
 );
 
 alter table tbconta add NumAgencia int;
@@ -41,7 +42,7 @@ describe tbconta;
 
 create table tbagencia(
 NumeroAgencia int primary key,
-Endereco varchar(50)
+Endereco varchar(50) not null
 ); 
 
 alter table tbagencia add CodBanco int;
@@ -49,7 +50,7 @@ alter table tbagencia add constraint CodBanco foreign key (CodBanco) references 
  
 create table tbbanco(
 Codigo Int primary key,
-Nome varchar(50)
+Nome varchar(50) not null
 );
 
 describe tbcliente;
