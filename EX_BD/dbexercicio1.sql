@@ -1,8 +1,8 @@
 -- EXERCICIOS I --
 
 -- 1º EXERCICIO -- 
-create database dbisaefla;
-use dbisaefla;
+create database dbflaisa;
+use dbflaisa;
 
 -- 2º EXERCICIO -- 
 create table tbUsuario (
