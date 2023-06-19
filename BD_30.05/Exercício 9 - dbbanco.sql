@@ -15,49 +15,38 @@ Endereco varchar(50)  not null
 
 create table tbtelefone_cliente(
 Cpf bigint,
-Telefone int
+foreign key (Cpf) references tbcliente (Cpf),
+Telefone int primary key
 );
-
-create table tbhistorico(
-DataInicio date
-);
-
-create table tbconta(
-NumeroConta int primary key,
-Saldo decimal(7,2) not null,
-TipoConta smallint not null
-);
-
-/* 
-adicioanndo a fk da tabela tbhistorico do 
-atributo NumeroConta para a tabela tbconta 
-*/
-alter table tbhistorico add NumeroConta int;
-alter table tbhistorico add constraint NumeroConta foreign key (NumeroConta) references tbconta (NumeroConta);
-
-alter table tbhistorico add Cpf bigint;
-alter table tbhistorico add constraint Cpf foreign key (Cpf) references tbcliente (Cpf);
-
-describe tbhistorico;
-
-create table tbagencia(
-NumeroAgencia int primary key,
-Endereco varchar(50)
-); 
-
-alter table tbconta add NumAgencia int;
-alter table tbconta add constraint NumAgencia foreign key (NumAgencia) references tbagencia (NumeroAgencia);
-
-describe tbconta;
 
 create table tbbanco(
 Codigo Int primary key,
-Nome varchar(50)
+Nome varchar(50) not null
 );
 
-alter table tbagencia add CodBanco int;
-alter table tbagencia add constraint CodBanco foreign key (CodBanco) references tbBanco (Codigo);
- 
+create table tbagencia(
+CodBanco int,
+foreign key (CodBanco) references tbbanco (Codigo), 
+NumeroAgencia int primary key,
+Endereco varchar(50) not null
+); 
+
+create table tbconta(
+NumeroConta int primary key,
+Saldo decimal(7,2),
+TipoConta smallint,
+NumAgencia int not null,
+foreign key (NumAgencia) references tbagencia (NumeroAgencia)
+);
+
+create table tbhistorico(
+Cpf bigint unique,	
+NumeroConta int,
+DataInicio date,
+foreign key (NumeroConta) references tbconta(NumeroConta),
+foreign key (Cpf) references tbcliente (Cpf),
+constraint tbhistorico primary key (Cpf,NumeroConta)
+);
 
 describe tbcliente;
 describe tbtelefone_cliente;
@@ -66,8 +55,9 @@ describe tbconta;
 describe tbagencia;
 describe tbbanco;
 
--- 3 --
-
+-- 3º EXERCICIO --
+ 
+-- Registros da tabela BANCO -- 
 insert into tbBANCO (codigo, Nome)
 	values ( 1, 'Banco do Brasil');
     
@@ -77,26 +67,27 @@ insert into tbBANCO (codigo, Nome)
 insert into tbBANCO (codigo, Nome)
 	values ( 801, 'Banco Escola');
     
-select * from tbbanco;
+select * from tbBANCO;
+    
+-- Registros da tabela AGENCIA -- 
+insert into tbAGENCIA (CodBanco, NumeroAgencia, Endereco)
+	values ( 1, 123, 'Av  Paulista,78');
     
 insert into tbAGENCIA (CodBanco, NumeroAgencia, Endereco)
-	values ( 1, 123, 'Av  Paulista, 78');
+	values ( 104, 159, 'Rua Liberdade,124');
     
 insert into tbAGENCIA (CodBanco, NumeroAgencia, Endereco)
-	values ( 104, 159, 'Rua Liberdade, 124');
-    
-insert into tbAGENCIA (CodBanco, NumeroAgencia, Endereco)
-	values ( 801, 401, 'Rua Vinte três, 23');
-
-select * from tbagencia;
+	values ( 801, 401, 'Rua Vinte três,23');
 
 insert into tbAGENCIA (CodBanco, NumeroAgencia, Endereco)
 	values ( 801, 485, 'Av Marechal,68');
-    
+
+select * from tbAGENCIA;
+
+-- Registros da tabela Cliente --
 insert into tbCliente (Cpf, Nome, Sexo, Endereco)
 	values ( 12345678910, 'Enildo', 'M', 'Rua Grande, 75');
-    
-    
+
 insert into tbCliente (Cpf, Nome, Sexo, Endereco)
 	values ( 12345678911, 'Astrogildo', 'M', 'Rua Pequena, 789');
 
@@ -108,6 +99,7 @@ insert into tbCliente (Cpf, Nome, Sexo, Endereco)
     
 select * from tbcliente;
 
+-- Registros da tabela Conta -- 
 insert into tbConta (NumeroConta, Saldo, TipoConta, NumAgencia)
 	values (9876 , 456.05 , 1, 123);
     
@@ -122,6 +114,7 @@ insert into tbConta (NumeroConta, Saldo, TipoConta, NumAgencia)
     
 select * from tbConta;
 
+-- Registros da tabela historico -- 
 insert into tbhistorico (Cpf, NumeroConta, DataInicio)
 	values (12345678910 , 9876 , '2001-04-15');
     
@@ -132,10 +125,12 @@ insert into tbhistorico (Cpf, NumeroConta, DataInicio)
 	values (12345678912 , 9878 , '2021-03-11');
     
 insert into tbhistorico (Cpf, NumeroConta, DataInicio)
-	values (12345678913 , 9879 , '2021-07-05');
+	values (12345678913 , 9879 , '2000-07-05');
     
 select * from tbhistorico;
 
+
+-- Registros da tabela telefone_cliente -- 
 insert into tbtelefone_cliente (Cpf, telefone)
 	values (12345678910 , '912345678');
     
@@ -151,51 +146,51 @@ insert into tbtelefone_cliente (Cpf, telefone)
 select * from tbtelefone_cliente;
 
 
--- 4 -- 
+-- 4º EXERCICIO --
 alter table tbcliente add email varchar(40); 
 
--- 5 --
+-- 5º EXERCICIO --
 select Cpf, Endereco from tbCliente where Nome = 'Monica';
 
--- 6-- 
+-- 6º EXERCICIO --
 select NumeroAgencia, endereco from tbAgencia where Codbanco= '801';
 
--- 7 -- 
+-- 7º EXERCICIO --
 select * from tbCliente where sexo = 'M';
 
 
--- Ex X -- 
--- 1 -- 
+-- EXERCICIO IX --
+ 
+-- 1º EXERCICIO --
 set sql_safe_updates = 0;
 
 delete from tbtelefone_cliente  where cpf = '12345678911';
 select * from tbtelefone_cliente;
 
--- 2 --
-
+-- 2º EXERCICIO --
 update tbconta set TipoConta = 2 where NumeroConta = 9879;
 select * from tbConta;
 
--- 3 -- 
+-- 3º EXERCICIO --
 update tbcliente set email = 'Astro@Escola.com' where Nome = 'Monica';
 select * from tbcliente;
 
--- 4 --
-update tbconta set saldo = saldo + (10/100) where NumeroConta = 9876;
+-- 4º EXERCICIO --
+update tbconta set saldo = (saldo * (10/100)) + saldo where NumeroConta = 9876;
 select * from tbconta;
 
--- 5 --
+-- 5º EXERCICIO --
 select Nome, Email, Endereco from tbCliente  where Nome = 'Monica'; 
 
--- 6 -- 
+-- 6º EXERCICIO --
 update tbCliente set Nome = 'Enildo Candido' , email = 'enildo@escola.com' where Nome = 'Enildo';
 select * from tbcliente;
 
--- 7 -- 
+-- 7º EXERCICIO --
 update tbconta set saldo = saldo - 30;
 select * from tbconta;
 
--- 8 -- 
+-- 8º EXERCICIO --
 delete from tbconta where NumeroConta = 9878;
 -- Não foi possível apagar pois não podemos apagar uma linha pai; e tem muitas restições --
 
