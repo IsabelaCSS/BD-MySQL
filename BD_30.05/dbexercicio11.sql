@@ -233,4 +233,30 @@ Id int,
 foreign key (Id) references tbCliente (Id)
 );
 
+-- Exercicio DML --
+drop procedure spSelectFornecedor;
 
+Delimiter $$
+create procedure spSelectFornecedor(vNome varchar (200),vCNPJ decimal (14,0),vTelefone decimal (11,0))
+Begin
+insert into tbFornecedor (Nome,CNPJ,Telefone)
+					values(vNome,vCNPJ,vTelefone);
+END $$
+
+call spSelectFornecedor('Revenda Chico Loco', 1245678937123, 11934567897);
+call spSelectFornecedor('José Faz Tudo S/A', 1345678937123, 11934567898);
+call spSelectFornecedor('Vadalto Entregas', 1445678937123, 11934567899);
+call spSelectFornecedor('Astrogildo das Estrela', 1545678937123, 11934567800);
+call spSelectFornecedor('Amoroso e Doce', 1645678937123, 11934567801);
+call spSelectFornecedor('Marcelo Dedal', 1745678937123, 11934567802);
+call spSelectFornecedor('Fransciscano Cachaça', 1845678937123, 11934567803);
+call spSelectFornecedor('Joãozinho Chupeta', 1945678937123, 11934567804);
+
+select * from tbFornecedor;
+
+Delimiter $$
+create procedure spSelectCidade(vCidade varchar (200))
+Begin
+insert into tbCidade (Cidade)
+					values(vCidade);
+END $$
