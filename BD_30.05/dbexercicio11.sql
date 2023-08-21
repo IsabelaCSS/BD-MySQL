@@ -260,3 +260,56 @@ Begin
 insert into tbCidade (Cidade)
 					values(vCidade);
 END $$
+
+drop procedure spSelectCidade;
+
+call spSelectCidade('Rio de Janeiro');
+call spSelectCidade('São Carlos');
+call spSelectCidade('Campinas');
+call spSelectCidade('Franco da Rocha');
+call spSelectCidade('Osasco');
+call spSelectCidade('Pirituba');
+call spSelectCidade('lapa');
+call spSelectCidade('Ponta Grossa');
+
+select * from tbCidade;
+
+
+drop procedure spSelectEstado;
+
+Delimiter $$
+create procedure spSelectEstado(vUF char(2))
+Begin
+insert into tbEstado (UF)
+					values(vUF);
+END $$
+
+call spSelectEstado('SP');
+call spSelectEstado('RS');
+call spSelectEstado('RJ');
+
+
+/* Exercício 4 */
+
+Delimiter $$
+create procedure spSelectBairro(vBairro varchar(200))
+Begin 
+insert into tbBairro(Bairro) values (vBairro);
+END $$
+
+call spSelectBairro('Aclimação');
+call spSelectBairro('Capão Redondo');
+call spSelectBairro('Pirituba');
+call spSelectBairro('Liberdade');
+
+select * from tbBairro;
+
+/* Exercício 5 */
+
+Delimiter $$
+create procedure spSelectProduto(vProduto varchar(200))
+Begin 
+insert into tbProduto(Produto) values (vProduto);
+END $$
+
+call spSelect
