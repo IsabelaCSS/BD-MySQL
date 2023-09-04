@@ -267,20 +267,20 @@ as select
 */
 
 
+
+    select lougradouro,BairroId,CidadeId,UFId,CEP from tbEndereco;
+
+drop procedure spSelectCliente;
 Delimiter $$
-create procedure spSelectPF(vId int, vNomeCli varchar(200),vCidade varchar (200),vUF varchar (200),vCEP decimal (8,0))
+create procedure spSelectCliente(vNomeCli varchar(200),vNumEnd decimal (6,0),vCompEnd varchar (50),vCEP decimal (8,0),
+			vCPF decimal (11,0),vRG_Dig char (1),vNasc date,vlougradouro varchar (200),vBairro varchar (200),vCidade varchar (200),vUF char (2))
 Begin 
+insert into tbCliente (NomeCli,NumEnd,CompEnd)
+					values (vNomeCli,vNumEnd,vCompEnd);
+insert into tbcliente_PF (CPF,RG_Dig,Nasc)
+					values (vCPF,vRG_Dig,vNasc);
 insert into tbEndereco (lougradouro,BairroId,CidadeId,UFId,CEP)
 					values (vlougradouro,vBairro,vCidade,vUF,vCEP);
-         
 END $$
 
-
-        create table tbcliente_PF(
-CPF decimal (11,0) primary key,
-RG decimal (9,0) not null,
-RG_Dig char (1) not null,
-Nasc date not null,
-Id int,
-foreign key (Id) references tbCliente (Id)
-);
+select NomeCli, NumEnd, CompEnd from tbCliente as cCPF,RG_Dig,Nasc  tbcliente_PF; 
