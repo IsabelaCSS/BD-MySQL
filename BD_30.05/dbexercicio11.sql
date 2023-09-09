@@ -1,5 +1,3 @@
-
-
 create database dbdistribuidora;
 use dbdistribuidora;
 
@@ -237,12 +235,12 @@ call spSelectEndereco('Rua Riu XI',7,3,1,'12345055');
 
 
 select * from tbCidade;
-call spSelectCidade('Barra Mansa')
+call spSelectCidade('Barra Mansa');
 	call spSelectEndereco('Rua Chocolate',1,10,3,'12345056');
 
 
 select * from tbBairro;
-call spSelectbairro('Barra Funda')
+call spSelectbairro('Barra Funda');
 	call spSelectEndereco('Rua Pão na Chapa',8,8,2,'12345057');
     
     select * from tbEndereco;
@@ -262,25 +260,106 @@ as select
 		on tbEndereco.UFId = tbEstado.UF;
         
     select * from tb_Endereco;
-    
-    select lougradouro,Bairro,Cidade,UF,CEP from tb_Endereco;
-*/
-
-
-
+    */
     select lougradouro,BairroId,CidadeId,UFId,CEP from tbEndereco;
+
+
+
 
 drop procedure spSelectCliente;
 Delimiter $$
-create procedure spSelectCliente(vNomeCli varchar(200),vNumEnd decimal (6,0),vCompEnd varchar (50),vCEP decimal (8,0),
-			vCPF decimal (11,0),vRG_Dig char (1),vNasc date,vlougradouro varchar (200),vBairro varchar (200),vCidade varchar (200),vUF char (2))
+create procedure spSelectCliente(vNomeCli varchar(200),vNumEnd decimal (6,0))/*vCompEnd varchar (50))/*vCEP decimal (8,0))
+			vCPF decimal (11,0),RG decimal (9,0), vRG_Dig char (1),vNasc date,
+            vlougradouro varchar (200),vBairro varchar (200),vCidade varchar (200),vUF char (2))*/
 Begin 
-insert into tbCliente (NomeCli,NumEnd,CompEnd)
-					values (vNomeCli,vNumEnd,vCompEnd);
-insert into tbcliente_PF (CPF,RG_Dig,Nasc)
-					values (vCPF,vRG_Dig,vNasc);
+insert into tbCliente (NomeCli,NumEnd)
+					values (vNomeCli,vNumEnd);
+                    /*
+insert into tbcliente_PF (CPF,RG,RG_Dig,Nasc)
+					values (vCPF,vRG,vRG_Dig,vNasc);
 insert into tbEndereco (lougradouro,BairroId,CidadeId,UFId,CEP)
-					values (vlougradouro,vBairro,vCidade,vUF,vCEP);
+					values (vlougradouro,vBairro,vCidade,vUF,vCEP);*/
 END $$
 
-select NomeCli, NumEnd, CompEnd from tbCliente as cCPF,RG_Dig,Nasc  tbcliente_PF; 
+call spSelectCliente('Pimpão','325');
+drop procedure spSelectCliente;
+call spSelectCliente('Disney Chaplin','89','Ap.12');
+drop procedure spSelectCliente;
+call spSelectCliente('Marciano','744');
+call spSelectCliente('Lança Perfume','128');
+call spSelectCliente('Remédio Amargo','2585');
+
+select * from tbCliente;
+
+
+
+drop procedure spSelectClientePF;
+Delimiter $$
+create procedure spSelectClientePF(vId int,vCPF decimal (11,0),vRG decimal (9,0), vRG_Dig char (1),vNasc date)/*
+            vlougradouro varchar (200),vBairro varchar (200),vCidade varchar (200),vUF char (2))*/
+Begin 
+insert into tbcliente_PF (Id,CPF,RG,RG_Dig,Nasc)
+					values (vId,vCPF,vRG,vRG_Dig,vNasc);
+                    /*
+insert into tbEndereco (lougradouro,BairroId,CidadeId,UFId,CEP)
+					values (vlougradouro,vBairro,vCidade,vUF,vCEP);*/
+END $$
+call spSelectClientePF(1,'12345678911','12345678','0',STR_TO_DATE("12,10,2000","%d,%m,%Y"));
+call spSelectClientePF(2,'12345678912','12345679','0',STR_TO_DATE("21,11,2001","%d,%m,%Y"));
+call spSelectClientePF(3,'12345678913','12345680','0',STR_TO_DATE("01,06,2001","%d,%m,%Y"));
+call spSelectClientePF(4,'12345678914','12345681','X',STR_TO_DATE("05,04,2004","%d,%m,%Y"));
+call spSelectClientePF(5,'12345678915','12345682','0',STR_TO_DATE("15,07,2002","%d,%m,%Y"));
+
+select * from tbcliente_PF;
+
+call spSelectBairro('Jardim Santa Isabel');
+call spSelectCidade('Cuiabá');
+call spSelectEstado('MT');
+
+call spSelectEndereco('');
+
+ select * from tbEndereco;
+ select * from tbBairro;
+ select * from tbCidade;
+ select * from tbEstado;
+ select * from tbCliente;
+
+select * from tbcliente_pf;
+
+drop view vw_Cliente
+create view vw_Cliente
+as select 
+	tbCliente.NomeCli,
+    tbCliente.NumEnd,
+    tbCliente.CompEnd,
+	tbcliente_PF.CPF,
+	tbcliente_PF.RG,
+    tbcliente_PF.RG_Dig,
+    tbcliente_PF.Nasc,
+	from tbCliente 
+	inner join tbcliente_PF
+		on tbCliente.Id = tbcliente_PF.Id
+	inner join tbBairro
+        on tbCliente.Id = tbBairro.BairroId
+	inner join tbCidade
+        on tbCliente.Id = tbCidade.CidadeId;
+
+			select * from vw_Cliente;
+
+drop procedure spSelectClientes;
+Delimiter $$
+create procedure spSelectClientes(vId int)
+Begin 
+insert into tbCliente(Id)
+					values(vId);
+  insert into tbCliente_pf(Id)
+					values(vId);
+insert into tbEndereco(Id)
+					values(vId);
+
+END $$
+
+call spSelectClientes('1')
+
+
+   
