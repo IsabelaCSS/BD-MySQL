@@ -471,3 +471,4 @@ call spInsertAtt ('12345678910119', 'teste', '800.20', '200');
 
 select * from tbProduto; 
 select * from tb_ProdutoHistorico;
+
