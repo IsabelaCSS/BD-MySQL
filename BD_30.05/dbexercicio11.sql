@@ -115,135 +115,142 @@ foreign key (Id) references tbCliente (Id)
 															-- Exercicio DML --
 -- Exercicio 1 --
 Delimiter $$
-create procedure spSelectFornecedor(vNome varchar (200),vCNPJ decimal (14,0),vTelefone decimal (11,0))
+create procedure spInsertFornecedor(vNome varchar (200),vCNPJ decimal (14,0),vTelefone decimal (11,0))
 Begin
 insert into tbFornecedor (Nome,CNPJ,Telefone)
 					values(vNome,vCNPJ,vTelefone);
 END $$
 
-call spSelectFornecedor('Revenda Chico Loco', 1245678937123, 11934567897);
-call spSelectFornecedor('José Faz Tudo S/A', 1345678937123, 11934567898);
-call spSelectFornecedor('Vadalto Entregas', 1445678937123, 11934567899);
-call spSelectFornecedor('Astrogildo das Estrela', 1545678937123, 11934567800);
-call spSelectFornecedor('Amoroso e Doce', 1645678937123, 11934567801);
-call spSelectFornecedor('Marcelo Dedal', 1745678937123, 11934567802);
-call spSelectFornecedor('Fransciscano Cachaça', 1845678937123, 11934567803);
-call spSelectFornecedor('Joãozinho Chupeta', 1945678937123, 11934567804);
+call spInsertFornecedor('Revenda Chico Loco', 1245678937123, 11934567897);
+call spInsertFornecedor('José Faz Tudo S/A', 1345678937123, 11934567898);
+call spInsertFornecedor('Vadalto Entregas', 1445678937123, 11934567899);
+call spInsertFornecedor('Astrogildo das Estrela', 1545678937123, 11934567800);
+call spInsertFornecedor('Amoroso e Doce', 1645678937123, 11934567801);
+call spInsertFornecedor('Marcelo Dedal', 1745678937123, 11934567802);
+call spInsertFornecedor('Fransciscano Cachaça', 1845678937123, 11934567803);
+call spInsertFornecedor('Joãozinho Chupeta', 1945678937123, 11934567804);
 
 select * from tbFornecedor;
 
 -- Exercício 2 --
 Delimiter $$
-create procedure spSelectCidade(vCidade varchar (200))
-Begin
-insert into tbCidade (Cidade)
-					values(vCidade);
+create procedure spInsertCidade(vCidade varchar (200))
+Begin 
+	IF NOT EXISTS (SELECT Cidade FROM tbCidade Where Cidade = vCidade) THEN
+		Insert into tbCidade (Cidade) values (vCidade);
+	End if;
 END $$
 
-call spSelectCidade('Rio de Janeiro');
-call spSelectCidade('São Carlos');
-call spSelectCidade('Campinas');
-call spSelectCidade('Franco da Rocha');
-call spSelectCidade('Osasco');
-call spSelectCidade('Pirituba');
-call spSelectCidade('lapa');
-call spSelectCidade('Ponta Grossa');
+call spInsertCidade('Rio de Janeiro');
+call spInsertCidade('São Carlos');
+call spInsertCidade('Campinas');
+call spInsertCidade('Franco da Rocha');
+call spInsertCidade('Osasco');
+call spInsertCidade('Pirituba');
+call spInsertCidade('lapa');
+call spInsertCidade('Ponta Grossa');
 
 select * from tbCidade;
 
 -- Exercício 3 --
 Delimiter $$
-create procedure spSelectEstado(vUF char(2))
+create procedure spInsertEstado(vUF char(2))
 Begin
-insert into tbEstado (UF)
-					values(vUF);
+	IF NOT EXISTS (SELECT UF FROM tbEstado Where UF = vUF) THEN
+		Insert into tbEstado (UF) values (vUF);
+End if;
 END $$
+call spInsertEstado('SP');
+call spInsertEstado('RS');
+call spInsertEstado('RJ');
 
-call spSelectEstado('SP');
-call spSelectEstado('RS');
-call spSelectEstado('RJ');
-
+select * from tbEstado;
 
 -- Exercício 4 --
 Delimiter $$
-create procedure spSelectBairro(vBairro varchar(200))
+create procedure spInsertBairro(vBairro varchar(200))
 Begin 
-insert into tbBairro(Bairro) values (vBairro);
+	IF NOT EXISTS (SELECT Bairro FROM tbBairro Where Bairro = vBairro) THEN
+		Insert into tbBairro (Bairro) values (vBairro);
+     End if;   
 END $$
 
-call spSelectBairro('Aclimação');
-call spSelectBairro('Capão Redondo');
-call spSelectBairro('Pirituba');
-call spSelectBairro('Liberdade');
+call spInsertBairro('Aclimação');
+call spInsertBairro('Capão Redondo');
+call spInsertBairro('Pirituba');
+call spInsertBairro('Liberdade');
 
 select * from tbBairro;
 
 
 -- Exercicio 5 --
 Delimiter $$
-create procedure spSelectProduto(vCodigoBarras decimal (14,0), vNome varchar (200),vValorUnitario decimal (8,2),vQtd int)
+create procedure spInsertProduto(vCodigoBarras decimal (14,0), vNome varchar (200),vValorUnitario decimal (8,2),vQtd int)
 Begin 
-insert into tbProduto(CodigoBarras,Nome,ValorUnitario,Qtd) 
-					values (vCodigoBarras,vNome,vValorUnitario,vQtd);
+	IF NOT EXISTS (SELECT CodigoBarras FROM tbProduto where CodigoBarras = vCodigoBarras) THEN
+		Insert into tbProduto (CodigoBarras, Nome, ValorUnitario, Qtd) values (vCodigoBarras, vNome, vValorUnitario, vQtd);
+	End if;
 END $$
 
-call spSelectProduto('12345678910111','Rei de Papel Mache','54.61','120');
-call spSelectProduto('12345678910112','Bolinha de Sabão','100.45','120');
-call spSelectProduto('12345678910113','Carro Bate','44.00','120');
-call spSelectProduto('12345678910114','Bola Furada','10.00','120');
-call spSelectProduto('12345678910115','Maçã Laranja','99.44','120');
-call spSelectProduto('12345678910116','Boneco de Hitler','124.00','200');
-call spSelectProduto('12345678910117','Farinha de Suruói','50.00','200');
-call spSelectProduto('12345678910118','Zelador de Cemitério','24.50','100');
+call spInsertProduto (12345678910111, 'Rei de Papel Mache', 54.61, 120);
+call spInsertProduto (12345678910112, 'Bolinha de Sabão', 100.45, 120);
+call spInsertProduto (12345678910113, 'Carro Bate', 44.00, 120);
+call spInsertProduto (12345678910114, 'Bola Furada', 10.00, 120);
+call spInsertProduto (12345678910115, 'Maçã Laranja', 99.44, 120);
+call spInsertProduto (12345678910116, 'Boneco do Hitler', 124.00, 200);
+call spInsertProduto (12345678910117, 'Farinha de Suruí', 50.00, 200);
+call spInsertProduto (12345678910118, 'Zalador de Cemitério', 24.50, 100);
+call spInsertProduto('12345678910111','Rei de Papel Mache','54.61','120');
+call spInsertProduto('12345678910112','Bolinha de Sabão','100.45','120');
+call spInsertProduto('12345678910113','Carro Bate','44.00','120');
+call spInsertProduto('12345678910114','Bola Furada','10.00','120');
+call spInsertProduto('12345678910115','Maçã Laranja','99.44','120');
+call spInsertProduto('12345678910116','Boneco de Hitler','124.00','200');
+call spInsertProduto('12345678910117','Farinha de Suruói','50.00','200');
+call spInsertProduto('12345678910118','Zelador de Cemitério','24.50','100');
 
 select * from tbProduto;
 
 
 -- Exercicio 6 --
 Delimiter $$
-create procedure spSelectEndereco(vlougradouro varchar (200), vBairro varchar (200),vCidade varchar (200),vUF varchar (200),vCEP decimal (8,0))
+create procedure spInsertEndereco(vlougradouro varchar (200), vBairro varchar (200),vCidade varchar (200),vUF varchar (200),vCEP decimal (8,0))
 Begin 
-insert into tbEndereco (lougradouro,BairroId,CidadeId,UFId,CEP)
-					values (vlougradouro,vBairro,vCidade,vUF,vCEP);
-         
+		IF NOT EXISTS (SELECT Bairro FROM tbBairro where Bairro = vBairro) THEN
+              Insert into tbBairro (Bairro)
+					 values (vBairro);
+		END IF;
+                  
+		IF NOT EXISTS (SELECT Cidade FROM tbCidade where Cidade = vCidade) THEN
+              Insert into tbCidade(Cidade)
+                     values (vCidade);
+		END IF;
+        
+		IF NOT EXISTS (SELECT UF FROM tbEstado where UF = vUF) THEN
+              Insert into tbEstado (UF)
+                     values (vUF);
+		END IF;
+        
+		Insert into tbEndereco (lougradouro, BairroId, CidadeId, UFId, CEP)
+									values (vlougradouro, (SELECT Bairroid FROM tbBairro where Bairro = vBairro), 
+	
+		(SELECT CidadeId FROM tbCidade where Cidade = vCidade), 
+			(SELECT UFId FROM tbEstado where UF = vUF), vCEP);
 END $$
-
--- verifiquei em todas a tabela (Bairro, Cidade e Estado) se algum dado estava faltando, caso esteja adicionei em suas procedures --
-select * from tbBairro;
-select * from tbCidade;
-call spSelectBairro('Lapa');
-call spSelectCidade('São Paulo');
-	call spSelectEndereco('Rua da Federal',5,9,1,'12345050');
-
-
-call spSelectEndereco('Av Brasil',5,3,1,'12345051');
-
-
-select * from tbBairro;
-call spSelectBairro('Consolação');
-	call spSelectEndereco('Rua Liberdade',6,9,1,'12345052');
-
-
-select * from tbBairro;
-call spSelectBairro('Penha');
-	call spSelectEndereco('Av Paulista',7,1,3,'12345053');
-
-
-call spSelectEndereco('Rua Ximbú',7,1,3,'12345054');
-
-
-call spSelectEndereco('Rua Riu XI',7,3,1,'12345055');
-
-
-select * from tbCidade;
-call spSelectCidade('Barra Mansa');
-	call spSelectEndereco('Rua Chocolate',1,10,3,'12345056');
-
-
-select * from tbBairro;
-call spSelectbairro('Barra Funda');
-	call spSelectEndereco('Rua Pão na Chapa',8,8,2,'12345057');
+     	 
+call spInsertEndereco ('Rua da Federal', 'Lapa', 'São Paulo', 'SP', 12345050);
+call spInsertEndereco ('Av Brasil', 'Lapa', 'Campinas', 'SP', 12345051);
+call spInsertEndereco ('Rua Liberdade', 'Consolação', 'Campinas', 'SP', 12345052);
+call spInsertEndereco ('Av Paulista', 'Penha', 'Rio de Janeiro', 'RJ', 12345053);
+call spInsertEndereco ('Rua Ximbú', 'Penha', 'Rio de Janeiro', 'RJ', 12345054);
+call spInsertEndereco ('Rua Piu XI', 'Penha', 'Campinas', 'SP', 12345055);
+call spInsertEndereco ('Rua Chocolate', 'Aclimação', 'Barra Mansa', 'RJ', 12345056);
+call spInsertEndereco ('Rua Pão na Chapa', 'Barra Funda', 'Ponta Grossa', 'RS', 12345057);
     
+    
+select * from tbEndereco;
+
+
 -- selecionei as tabelas e juntei em uma só na tabela tbEndereco --
 select tbEndereco.lougradouro, tbBairro.Bairro, tbCidade.Cidade, tbEstado.UF, tbEndereco.CEP
          from tbEndereco
@@ -256,55 +263,31 @@ select tbEndereco.lougradouro, tbBairro.Bairro, tbCidade.Cidade, tbEstado.UF, tb
 
 
 -- Exercício 7 --
-Delimiter $$
-create procedure spSelectClientePF(vCPF decimal (11,0),vRG decimal (9,0), vRG_Dig char (1),vNasc date, vId int)
-Begin
-		insert into tbCliente_PF(CPF, RG, RG_Dig, Nasc, Id)
-					values (vCPF, vRG, vRG_Dig, vNasc, vId);
-END $$
+drop procedure spInsertClientePF;
 
 Delimiter $$
-create procedure spSelectCliente(vNomeCli varchar(200),vNumEnd decimal (6,0), vCompEnd varchar(50), vCEPCli decimal (8,0)) 
+create procedure spInsertClientePF(vNomeCli varchar(200),vNumEnd decimal (6,0), vCompEnd varchar(50),vCEP decimal (8,0),
+									vCPF decimal (11,0),vRG decimal (9,0), vRG_Dig char (1),vNasc date,
+                                    vlougradouro varchar (200), vBairro varchar (200),vCidade varchar (200),vUF varchar (200))
 Begin
-		insert into tbCliente(NomeCli, NumEnd, CompEnd, CEPCli)
-				values (vNomeCli, vNumEnd, vCompEnd, vCEPCli);
+    IF NOT EXISTS (SELECT CEP from tbEndereco where CEP = vCEP) THEN
+		call spInsertEndereco (vlougradouro, vBairro, vCidade, vUF, vCEP);
+	END IF;
+    
+		IF NOT EXISTS (select CPF from tbcliente_PF where CPF = vCPF) THEN
+			insert into tbCliente (NomeCli, NumEnd, CompEnd, CEPCli)
+				values (vNomeCli, vNumEnd, vCompEnd, (select CEP from tbEndereco where CEP = vCEP));
+			insert into tbCliente_PF (Id, CPF, RG, RG_Dig, Nasc)
+				values ((select Id from tbCliente where NomeCli = vNomeCli and NumEnd = vNumEnd), vCPF, vRG, vRG_Dig, vNasc);
+		END IF;    
 END $$
 
-select * from tbEndereco; 
-select * from tbCliente; 
-select * from tbBairro; 
-select * from tbCidade; 
-select * from tbEstado;
 
-select * from tbBairro;
-call spSelectBairro('Jardim Santa Isabel');
-
-select * from tbCidade;
-call spSelectCidade('Cuiabá');
-
-select * from tbEstado;
-call spSelectEstado('MT');
-
- -- call tbEndereco (lougradouro,BairroId,CidadeId,UFId,CEP) --
-call spSelectEndereco('Rua Veia',9,11,4,'12345059');
-call spSelectEndereco('Av Nova',9,11,4,'12345058');
-
-
-call spSelectCliente('Pimpão', '325', null, '12345051'); 
-call spSelectClientePF('12345678911','12345678','0',STR_TO_DATE("12,10,2000","%d,%m,%Y"),1);
-
-call spSelectCliente('Disney Chaplin','89','Ap.12','12345053');
-call spSelectClientePF('12345678912','12345679','0',STR_TO_DATE("21,11,2001","%d,%m,%Y"),2);
-
-call spSelectCliente('Marciano','744',null, '12345054');
-call spSelectClientePF('12345678913','12345680','0',STR_TO_DATE("01,06,2001","%d,%m,%Y"),3);
-
-call spSelectCliente('Lança Perfume','128', null, '12345059');
-call spSelectClientePF('12345678914','12345681','X',STR_TO_DATE("05,04,2004","%d,%m,%Y"),4);
-
-call spSelectCliente('Remédio Amargo','2585',null, '12345058');
-call spSelectClientePF('12345678915','12345682','0',STR_TO_DATE("15,07,2002","%d,%m,%Y"),5);
-
+call spInsertClientePF('Pimpão', 325, null, 12345051, 12345678911, 12345678, 0, STR_TO_DATE("12,10,2000","%d,%m,%Y"), 'Av Brasil', 'Lapa', 'Campinas', 'SP');
+call spInsertClientePF('Disney Chaplin', 89, 'Ap.12', 12345053, 12345678912, 12345679, 0, STR_TO_DATE("21,11,2001","%d,%m,%Y"), 'Av Paulista', 'Penha', 'Rio de Janeiro', 'RJ');
+call spInsertClientePF('Marciano', 744, null, 12345054, 12345678913, 12345680, 0, STR_TO_DATE("01,06,2001","%d,%m,%Y"), 'Rua Ximbú', 'Penha', 'Rio de Janeiro', 'RJ');
+call spInsertClientePF('Lança Perfume', 128, null, 12345059, 12345678914, 12345681, 'X', STR_TO_DATE("05,04,2004","%d,%m,%Y"), 'Rua Veia', 'Jardim Santa Isabel', 'Cuiabá', 'MT');
+call spInsertClientePF('Remédio Amargo', 2585, null, 12345058, 12345678915, 12345682, 'X', STR_TO_DATE("15,07,2002","%d,%m,%Y"), 'Rua Veia', 'Jardim Santa Isabel', 'Cuiabá', 'MT');
 
 select * from tbcliente;
 select * from tbEndereco;
@@ -315,126 +298,97 @@ select * from tbcliente_PF;
 
 
 -- Exercício 8 --
+Delimiter $$
+create procedure spInsertClientePJ(vNomeCli varchar(200),vCNPJ varchar (14), vIE varchar (11),vCEP varchar (8),
+										vlougradouro varchar (200),vNumEnd decimal (6,0), vCompEnd varchar(50),
+											vBairro varchar (200),vCidade varchar (200),vUF varchar (200))
+Begin
+    IF NOT EXISTS (SELECT CEP from tbEndereco where CEP = vCEP) THEN
+		call spInsertEndereco (vlougradouro, vBairro, vCidade, vUF, vCEP);
+	END IF;
+		IF NOT EXISTS (select CNPJ from tbcliente_PJ where CNPJ = vCNPJ) THEN
+			insert into tbCliente (NomeCli, NumEnd, CompEnd, CEPCli)
+				values (vNomeCli, vNumEnd, vCompEnd, (select CEP from tbEndereco where CEP = vCEP));
+			insert into tbcliente_PJ (CNPJ, IE, Id)
+				values ((select Id from tbCliente where NomeCli = vNomeCli and NumEnd = vNumEnd), vCNPJ, vIE,Id);
+		END IF;    
+END $$
+
+call spInsertClientePJ('Paganada', '12345678912345', '98765432198', '12345051', 'Av Brasil', 159, null, 'Lapa', 'Campinas', 'SP');
+call spInsertClientePJ('Caloteando', '12345678912346', '98765432199', '12345053', 'Av Paulista', 69, null, 'Penha', 'Rio de Janeiro', 'RJ');
+call spInsertClientePJ('Semgrana', '12345678912347', '98765432100', '12345060', 'Av Paulista', 189, 'Sala 23', 'Sei lá', 'Recife', 'PE');
+call spInsertClientePJ('Durango', '12345678912349', '98765432102', '12345060', 'Av Paulista', 1254, null, 'Sei lá', 'Recife', 'PE');
+
+select * from tbcliente;
+select * from tbEndereco;
 select * from tbBairro;
-call spSelectBairro('Sei Lá');
-
 select * from tbCidade;
-call spSelectCidade('Recife');
-
 select * from tbEstado;
-call spSelectEstado('PE');
-
- -- call tbEndereco (lougradouro,BairroId,CidadeId,UFId,CEP) --
-call spSelectEndereco('Rua dos Amores', 10, 12, 5, '12345060');
-
-Delimiter $$
-create procedure spSelectClientePJ(vCNPJ decimal (14,0), vIE decimal (11,0), vId int) 
-Begin
-		insert into tbCliente_PJ(CNPJ, IE, Id)
-			values (vCNPJ, vIE, vId);
-END $$
+select * from tbcliente_PJ;
 
 
-call spSelectCliente('Paganada','159', null, '12345059');
-call spSelectClientePJ('12345678912345','98765432198',6);
 
-call spSelectCliente('Caloteando','69', null, '12345053');
-call spSelectClientePJ('12345678912346','98765432199',7);
-
-call spSelectCliente('Semgrana','189', null, '12345060');
-call spSelectClientePJ('12345678912347','98765432100',8);
-
-call spSelectCliente('Cemreais','5024', 'Sala 23', '12345060');
-call spSelectClientePJ('12345678912348','98765432101',9);
-
-call spSelectCliente('Durango','1254', null, '12345060');
-call spSelectClientePJ('12345678912349','98765432102',10);
-
-/*
 -- Exercício 9 --
-drop procedure spInsertCompras;
-Delimiter $$
-create procedure spInsertCompras(vNotaFiscal int, vDataCompra date, vValorTotal decimal(8,2), vQtdTotal int, vCodigo int,
-									vCodigoBarras decimal (14,0), vValorItem decimal (8,2), vQtd int) 
-Begin
-	If Exists(select Codigo from tbFornecedor where Codigo = vCodigo) 
-        AND 
-        (select CodigoBarras from tbProduto where CodigoBarras = vCodigoBarras) 
-        THEN
-		Insert into tbCompra(NotaFiscal, DataCompra, ValorTotal, QtdTotal, Codigo)
-				values(vNotaFiscal, vDataCompra, vValorTotal, vQtdTotal, vCodigo);
-    Else
-		Insert into tbItemCompra(NotaFiscal, CodigoBarras, ValorItem, Qtd)
-				values (vNotaFiscal, vCodigoBarras, vValorItem, vQtd);
-    END if;
-END $$
-
+select * from tbCompra;
 select * from tbFornecedor;
-select * from tbproduto; 
-describe tbCompra; 
-describe tbItemCompra; 
-describe tbproduto; 
-describe tbFornecedor; 
-describe tbNota_fiscal; 
+select * from tbItemCompra;
+describe tbFornecedor;
 
- select tbCompra.NotaFiscal, tbFornecedor.Nome, tbCompra.DataCompra, tbProduto.CodigoBarras, 
- tbItemCompra.ValorItem, tbItemCompra.Qtd, tbCompra.QtdTotal, tbCompra.ValorTotal
-         from tbCompra
-         inner join tbNota_fiscal
-			on tbCompra.NotaFiscal = tbNota_fiscal.NF
-         inner join tbProduto
-			on tbCompra.CidadeId = tbProduto.CodigoBarras
-		inner join tbEstado
-			on tbEndereco.UFId = tbEstado.UFId;
-
-select * from tbCompra; 
-select * from tb_ProdutoHistorico; 
-
-insert into tbCompra(NotaFiscal, DataCompra, ValorTotal, QtdTotal, Codigo) 
-			values ('8459', STR_TO_DATE("01,05,2018","%d,%m,%Y"),'21944.00','700',5);
-
-insert into tbCompra(NotaFiscal, DataCompra, ValorTotal, QtdTotal, Codigo) 
-			values ('2482', STR_TO_DATE("22,04,2020","%d,%m,%Y"),'7290.00','180',1);
-            
-insert into tbCompra(NotaFiscal, DataCompra, ValorTotal, QtdTotal, Codigo) 
-			values ('21563', STR_TO_DATE("12,07,2020","%d,%m,%Y"),'900.00','300',6);
-            
-insert into tbCompra(NotaFiscal, DataCompra, ValorTotal, QtdTotal, Codigo) 
-			values ('8459', STR_TO_DATE("04,12,2020","%d,%m,%Y"),'21944.00','700',5);
-            
-insert into tbCompra(NotaFiscal, DataCompra, ValorTotal, QtdTotal, Codigo) 
-			values ('156354', STR_TO_DATE("23,11,2021","%d,%m,%Y"),'18900.00','350',1);
-
-
-
-drop procedure spSelectItemVenda;
+drop procedure spInsertCompras;
 
 Delimiter $$
-create procedure spSelectItemVenda(vNotaFiscal int, vCodigoBarras decimal (14,0), vValorItem decimal (8,2), vQtd int) 
+create procedure spInsertCompras(vNotaFiscal int, vNome varchar (200), vDataCompra date,vCodigoBarras decimal (14,0), 
+									vValorItem decimal (8,2), vQtd int, vQtdTotal int, vValorTotal decimal(8,2)) 
 Begin
-		insert into tbItemCompra(NotaFiscal, CodigoBarras, ValorItem, Qtd)
-				values (vNotaFiscal, vCodigoBarras, vValorItem, vQtd);
+    IF NOT EXISTS (SELECT Nome FROM tbFornecedor WHERE Nome = vNome) THEN
+        INSERT INTO tbFornecedor (Nome)
+        VALUES (vNome);
+    END IF;
+
+    IF NOT EXISTS (SELECT NotaFiscal FROM tbCompra WHERE NotaFiscal = vNotaFiscal) THEN
+        INSERT INTO tbCompra (NotaFiscal, DataCompra, ValorTotal, QtdTotal)
+        VALUES (vNotaFiscal, vDataCompra, vValorTotal, vQtdTotal);
+    END IF;
+
+    IF NOT EXISTS (SELECT CodigoBarras FROM tbItemCompra WHERE CodigoBarras = vCodigoBarras) THEN
+        INSERT INTO tbItemCompra (NotaFiscal, CodigoBarras, ValorItem, Qtd)
+        VALUES (vNotaFiscal, vCodigoBarras, vValorItem, vQtd);
+    END IF;
 END $$
 
-call spSelectItemVenda('8459','12345678910114','22.22','200');
- 
+call spInsertCompras(8459,'Amoroso e Doce', STR_TO_DATE("01,05,2018","%d,%m,%Y"), 12345678910111, 22.22, 200, 700, '21944.00');
+call spInsertCompras(2482,'Revenda Chico Loco', STR_TO_DATE("22,04,2020","%d,%m,%Y"), 12345678910112, 40.50, 180, 180, '7290.00');
+call spInsertCompras(21563,'Marcelo Dedal', STR_TO_DATE("12,07,2020","%d,%m,%Y"), 12345678910113, 3.00, 300, 300, '900.00');
+call spInsertCompras(8459,'Amoroso e Doce', STR_TO_DATE("04,12,2020","%d,%m,%Y"), 12345678910114, 35.00, 500, 700, '21944.00');
+call spInsertCompras(156354,'Revenda Chico Loco', STR_TO_DATE("23,11,2021","%d,%m,%Y"), 12345678910115, 54.00, 350, 350, '18900.00');
+
+select * from tbCompra;
+select * from tbFornecedor;
+select * from tbItemCompra;
+
  
 -- Exercício 11 --	
-select * from tbCliente;
-select * from tbNota_fiscal;
-select * from tbproduto;
-
-drop procedure spSelecttbNota_fiscal;
-
 Delimiter $$
-create procedure spSelecttbNota_fiscal(vNF int, vTotalNota decimal (8,2), vDataEmissao date)
+create procedure spSelecttbNota_fiscal(vNF int, vNomeCli varchar (200), vDataEmissao date,vTotalNota decimal (8,2))
 Begin
-		Insert into tbNota_fiscal(NF, TotalNota, DataEmissao)
-				values(vNF, vTotalNota, vDataEmissao); 
+	
+    IF NOT EXISTS (SELECT NF FROM tbNota_fiscal WHERE NF = vNF) THEN
+        INSERT INTO tbNota_fiscal (NF,TotalNota,DataEmissao)
+        VALUES (vNF,vTotalNota,vDataEmissao);
+    END IF;
+    
+    IF NOT EXISTS (SELECT NomeCli FROM tbCliente WHERE NomeCli = vNomeCli) THEN
+        INSERT INTO tbCliente (NomeCli)
+        VALUES (vNomeCli);
+    END IF;
 END $$
 
-call spSelecttbNota_fiscal('359',STR_TO_DATE("05,09,2022","%d,%m,%Y"));
-*/
+call spSelecttbNota_fiscal(359,'Pimpão',STR_TO_DATE("05,09,2022","%d,%m,%Y"),00.00);
+call spSelecttbNota_fiscal(360,'Lança Perfume',STR_TO_DATE("05,09,2022","%d,%m,%Y"),00.00);
+
+select * from tbCliente;
+select * from tbNota_fiscal;
+
 
 
 -- Exercício 12 --	
@@ -442,13 +396,12 @@ call spSelectProduto('12345678910130','Camiseta de Políester', '35.61','100');
 call spSelectProduto('12345678910131','Blusa Frio Moletom', '200.00','100');
 call spSelectProduto('12345678910132','Vestido Decote Redondo', '144.00','50');
 
-
 -- Exercício 13 --	
 drop procedure ApagarRegistro;
 Delimiter $$
 create procedure ApagarRegistro(vCodigoBarras decimal (14,0))
 Begin
-    	delete from tbProduto where vCodigoBarras = CodigoBarras;
+    delete from tbProduto where vCodigoBarras = CodigoBarras;
 END $$
 
 call ApagarRegistro('12345678910116');
@@ -466,40 +419,35 @@ END $$
 
 call spSelecttbProduto();
 
-
 -- Exercício 16 --
 create table tb_ProdutoHistorico like tbProduto; 
 describe tb_ProdutoHistorico;
-
 
 -- Exercício 17 --
 alter table tb_ProdutoHistorico add Ocorrencia varchar(20); 
 alter table tb_ProdutoHistorico add Atualizacao datetime;
 describe tb_ProdutoHistorico;
 
-
 -- Exercício 18 --
 alter table tb_ProdutoHistorico drop primary key; 
 alter table tb_ProdutoHistorico add primary key(CodigoBarras, Ocorrencia, Atualizacao);
 describe tb_ProdutoHistorico;
 
-
 -- Exercício 19 --
 Delimiter $$ 
 create procedure spInsertHistorico(vCodigoBarras decimal (14,0), vNome varchar (200), vValorUnitario decimal (8,2), vQtd int) 
 Begin
-		Insert into tbProduto(CodigoBarras, Nome, ValorUnitario, Qtd)
-    			values(vCodigoBarras, vNome, vValorUnitario, vQtd); 
+	Insert into tbProduto(CodigoBarras, Nome, ValorUnitario, Qtd)
+    values(vCodigoBarras, vNome, vValorUnitario, vQtd); 
     
-    		Insert into tb_ProdutoHistorico(CodigoBarras, Nome, ValorUnitario, Qtd, Ocorrencia, Atualizacao)
-    			values(vCodigoBarras, vNome, vValorUnitario, vQtd, 'Novo', current_timestamp());
+    insert into tb_ProdutoHistorico(CodigoBarras, Nome, ValorUnitario, Qtd, Ocorrencia, Atualizacao)
+    values(vCodigoBarras, vNome, vValorUnitario, vQtd, 'Novo', current_timestamp());
 END $$ 
 
 call spInsertHistorico ('12345678910119', 'Agua mineral', '1.99', '500');
 
 select * from tbProduto; 
 select * from tb_ProdutoHistorico;
-
 
 -- Exercício 20 --
 Delimiter $$ 
@@ -510,12 +458,12 @@ Begin
 	WHERE CodigoBarras = vCodigoBarras;
     
    If exists(select CodigoBarras from tbProduto where CodigoBarras = vCodigoBarras) THEN
-    	Insert into tb_ProdutoHistorico(CodigoBarras, Nome, ValorUnitario, Qtd, Ocorrencia, Atualizacao)
-    		values(vCodigoBarras, vNome, vValorUnitario, vQtd, 'Atualizado', current_timestamp());
+    Insert into tb_ProdutoHistorico(CodigoBarras, Nome, ValorUnitario, Qtd, Ocorrencia, Atualizacao)
+    values(vCodigoBarras, vNome, vValorUnitario, vQtd, 'Atualizado', current_timestamp());
     
    Else 
-    	Insert into tb_ProdutoHistorico(CodigoBarras, Nome, ValorUnitario, Qtd, Ocorrencia, Atualizacao)
-    		values(vCodigoBarras, vNome, vValorUnitario, vQtd, 'Novo', current_timestamp());
+    insert into tb_ProdutoHistorico(CodigoBarras, Nome, ValorUnitario, Qtd, Ocorrencia, Atualizacao)
+    values(vCodigoBarras, vNome, vValorUnitario, vQtd, 'Novo', current_timestamp());
     END if;
 END $$
 
@@ -523,4 +471,3 @@ call spInsertAtt ('12345678910119', 'teste', '800.20', '200');
 
 select * from tbProduto; 
 select * from tb_ProdutoHistorico;
-
