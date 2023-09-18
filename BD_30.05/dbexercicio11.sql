@@ -160,6 +160,7 @@ Begin
 		Insert into tbEstado (UF) values (vUF);
 End if;
 END $$
+
 call spInsertEstado('SP');
 call spInsertEstado('RS');
 call spInsertEstado('RJ');
@@ -263,8 +264,6 @@ select tbEndereco.lougradouro, tbBairro.Bairro, tbCidade.Cidade, tbEstado.UF, tb
 
 
 -- Exercício 7 --
-drop procedure spInsertClientePF;
-
 Delimiter $$
 create procedure spInsertClientePF(vNomeCli varchar(200),vNumEnd decimal (6,0), vCompEnd varchar(50),vCEP decimal (8,0),
 									vCPF decimal (11,0),vRG decimal (9,0), vRG_Dig char (1),vNasc date,
@@ -296,28 +295,37 @@ select * from tbCidade;
 select * from tbEstado;
 select * from tbcliente_PF;
 
-
 -- Exercício 8 --
+drop procedure spInsertClientePJ;
+describe tbcliente_PJ;
+
 Delimiter $$
-create procedure spInsertClientePJ(vNomeCli varchar(200),vCNPJ varchar (14), vIE varchar (11),vCEP varchar (8),
+create procedure spInsertClientePJ(vNomeCli varchar(200),vCNPJ varchar (14), vIE decimal (11,0),vCEP varchar (12),
 										vlougradouro varchar (200),vNumEnd decimal (6,0), vCompEnd varchar(50),
-											vBairro varchar (200),vCidade varchar (200),vUF varchar (200))
+											vBairro varchar (200),vCidade varchar (200),vUF char (2))
 Begin
     IF NOT EXISTS (SELECT CEP from tbEndereco where CEP = vCEP) THEN
 		call spInsertEndereco (vlougradouro, vBairro, vCidade, vUF, vCEP);
 	END IF;
-		IF NOT EXISTS (select CNPJ from tbcliente_PJ where CNPJ = vCNPJ) THEN
+		IF NOT EXISTS (select NomeCli from tbCliente where NomeCli = vNomeCli) THEN
 			insert into tbCliente (NomeCli, NumEnd, CompEnd, CEPCli)
 				values (vNomeCli, vNumEnd, vCompEnd, (select CEP from tbEndereco where CEP = vCEP));
+		END IF;
+        IF NOT EXISTS (select UF from tbEstado where UF = vUF) then
+			insert into tbEstado (UF)
+				values (vUF);
+        end if;
+        
+		IF NOT EXISTS (select CNPJ from tbcliente_PJ where CNPJ = vCNPJ) THEN
 			insert into tbcliente_PJ (CNPJ, IE, Id)
-				values ((select Id from tbCliente where NomeCli = vNomeCli and NumEnd = vNumEnd), vCNPJ, vIE,Id);
+				values (vCNPJ, vIE, (select Id from tbCliente where NomeCli = vNomeCli and NumEnd = vNumEnd and CEPCli = (select CEP from tbEndereco where CEP = vCEP) LIMIT 1));
 		END IF;    
 END $$
 
-call spInsertClientePJ('Paganada', '12345678912345', '98765432198', '12345051', 'Av Brasil', 159, null, 'Lapa', 'Campinas', 'SP');
-call spInsertClientePJ('Caloteando', '12345678912346', '98765432199', '12345053', 'Av Paulista', 69, null, 'Penha', 'Rio de Janeiro', 'RJ');
-call spInsertClientePJ('Semgrana', '12345678912347', '98765432100', '12345060', 'Av Paulista', 189, 'Sala 23', 'Sei lá', 'Recife', 'PE');
-call spInsertClientePJ('Durango', '12345678912349', '98765432102', '12345060', 'Av Paulista', 1254, null, 'Sei lá', 'Recife', 'PE');
+call spInsertClientePJ('Paganada', '12345678912345',98765432198, 12345051, 'Av Brasil', 159, null, 'Lapa', 'Campinas', 'SP');
+call spInsertClientePJ('Caloteando', '12345678912346', 98765432199, 12345053, 'Av Paulista', 69, null, 'Penha', 'Rio de Janeiro', 'RJ');
+call spInsertClientePJ('Semgrana', '12345678912347', 98765432100, 12345060, 'Av Paulista', 189, 'Sala 23', 'Sei lá', 'Recife', 'PE');
+call spInsertClientePJ('Durango', '12345678912349', 98765432102, 12345060, 'Av Paulista', 1254, null, 'Sei lá', 'Recife', 'PE');
 
 select * from tbcliente;
 select * from tbEndereco;
@@ -325,7 +333,6 @@ select * from tbBairro;
 select * from tbCidade;
 select * from tbEstado;
 select * from tbcliente_PJ;
-
 
 
 -- Exercício 9 --
