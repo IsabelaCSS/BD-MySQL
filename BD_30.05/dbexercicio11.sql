@@ -656,3 +656,22 @@ FROM tbFornecedor
 RIGHT JOIN tbcompra ON tbFornecedor.Codigo = tbcompra.codigo;
 
 -- Exercício 42 --
+SELECT tbcliente.Id, tbcliente.NomeCli, 
+		tbVenda.DataVenda,
+		tbProduto.CodigoBarras, tbProduto.Nome, 
+		tbItem_Venda.ValorItem
+FROM tbCliente
+LEFT JOIN tbVenda ON tbcliente.Id = tbVenda.Id_Cli
+LEFT JOIN tbItem_Venda ON tbVenda.Id_Cli = tbItem_Venda.NumeroVenda
+LEFT JOIN tbProduto ON tbItem_Venda.CodigoBarras = tbProduto.CodigoBarras
+WHERE tbVenda.DataVenda IS NOT NULL
+ORDER BY tbcliente.NomeCli;
+
+-- Exercício 43 --
+SELECT tbBairro.Bairro
+FROM tbBairro
+LEFT JOIN tbEndereco ON tbBairro.BairroId = tbEndereco.BairroId
+LEFT JOIN tbCliente ON tbEndereco.CEP = tbCliente.CEPCli
+LEFT JOIN tbVenda ON tbCliente.Id = tbVenda.Id_Cli
+WHERE tbVenda.TotalVenda IS NULL
+GROUP BY tbBairro.Bairro;
